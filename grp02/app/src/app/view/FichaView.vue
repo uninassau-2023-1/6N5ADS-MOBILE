@@ -10,16 +10,22 @@
         <ion-select
           interface="action-sheet"
           placeholder="Prioridade"
-          v-model="teste"
+          v-model="prioridadeTipo"
         >
           <ion-select-option
-            :value="prioridade.id"
+            :value="prioridade"
             v-for="prioridade in prioridades"
             :key="prioridade"
-            >{{ prioridade.nome }}
+            >{{ prioridade }}
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-button @click="obterFicha">Pedir Ficha</ion-button>
+
+      <ion-card-header v-if="ficha">
+        <ion-card-title>Senha</ion-card-title>
+        <ion-card-subtitle>{{ ficha.token }}</ion-card-subtitle> </ion-card-header
+      >
     </ion-content>
   </ion-page>
 </template>
@@ -30,8 +36,9 @@ import { fichaController } from "../controller/fichaController";
 export default {
   data() {
     return {
-      teste: null,
+      prioridadeTipo: null,
       prioridades: [],
+      ficha: null,
     };
   },
   mounted() {
@@ -41,6 +48,12 @@ export default {
     obterPrioridades() {
       fichaController.obterPrioridades().then((res) => {
         this.prioridades = res.data;
+      });
+    },
+
+    obterFicha() {
+      fichaController.obterFicha(this.prioridadeTipo).then((res) => {
+        this.ficha = res.data;
       });
     },
   },

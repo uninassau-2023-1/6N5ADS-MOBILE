@@ -37,7 +37,13 @@ import {
   IonGrid,
   IonItem,
   IonSelectOption,
-  IonSelect
+  IonSelect,
+  IonButton,
+  IonCard, 
+  IonCardContent, 
+  IonCardHeader, 
+  IonCardSubtitle, 
+  IonCardTitle
 } from '@ionic/vue';
 
 import ExploreContainer from '@/components/ExploreContainer.vue';
@@ -65,6 +71,12 @@ app.component('IonGrid', IonGrid);
 app.component('IonItem', IonItem);
 app.component('IonSelectOption', IonSelectOption);
 app.component('IonSelect', IonSelect);
+app.component('IonButton', IonButton);
+app.component('IonCard', IonCard);
+app.component('IonCardContent', IonCardContent);
+app.component('IonCardHeader', IonCardHeader);
+app.component('IonCardSubtitle', IonCardSubtitle);
+app.component('IonCardTitle', IonCardTitle);
 
 router.isReady().then(() => {
   app.mount('#app');
