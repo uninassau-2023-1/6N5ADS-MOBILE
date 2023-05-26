@@ -6,6 +6,7 @@ function Client() {
   const [ticket, setTicket] = useState()
 
   async function requestTicket(ticketType) {
+    // TODO: extrair URL para arquivo de configuração
     let response = await fetch(`http://localhost:8000/tickets/${ticketType}`, {method: 'POST'})
     if (response.ok) {
       let result = await response.json()
