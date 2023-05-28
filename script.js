@@ -1,99 +1,67 @@
-const pwEl = document.getElementById("pw");
-const copyEl = document.getElementById("copy");
-const lenEl = document.getElementById("len");
-const upperEl = document.getElementById("upper");
-const lowerEl = document.getElementById("lower");
-const numberEl = document.getElementById("number");
-const symbolEl = document.getElementById("symbol");
-const generateEl = document.getElementById("generate");
+var generatedPasswords = [];
+var passwordTypeCount = {
+    "SP": 0,
+    "SG": 0,
+    "SE": 0
+};
 
-const upperLetters = "SP";
-const lowerLetters = "SG";
-const numbers = "0123456789";
-const symbols = "SE";
+function generatePassword(type) {
+    var now = new Date();
+    var year = now.getFullYear().toString().slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var day = ("0" + now.getDate()).slice(-2);
 
-function getLowercase() {
-    return lowerLetters[Math.floor(Math.random() * lowerLetters.length)];
+    var password = year + month + day + type;
+    return password;
 }
 
-function getUppercase() {
-    return upperLetters[Math.floor(Math.random() * upperLetters.length)];
+function updateReport() {
+    var reportContainer = document.getElementById("report-container");
+    var passwordTypeReport = document.getElementById("password-type-report");
+    passwordTypeReport.innerHTML = "";
+
+    for (var type in passwordTypeCount) {
+        var listItem = document.createElement("li");
+        var typeName = "";
+        if (type === "SP") {
+            typeName = "Senha Prioritária";
+        } else if (type === "SG") {
+            typeName = "Senha Geral";
+        } else if (type === "SE") {
+            typeName = "Senha de Exame";
+        }
+        listItem.textContent = typeName + ": " + passwordTypeCount[type];
+        passwordTypeReport.appendChild(listItem);
+    }
 }
 
-function getNumber() {
-    return numbers[Math.floor(Math.random() * numbers.length)];
-}
+document.getElementById("button-container").addEventListener("click", function(event) {
+    if (event.target && event.target.matches("button.button")) {
+        var generatedPasswordInput = document.getElementById("generated-password");
+        var generatedPasswordsList = document.getElementById("generated-passwords");
+        var passwordScore = document.getElementById("password-score");
 
-function getSymbol() {
-    return symbols[Math.floor(Math.random() * symbols.length)];
-}
+        var buttonId = event.target.id;
+        var passwordType = "";
+        if (buttonId === "prioritaria-button") {
+            passwordType = "SP";
+        } else if (buttonId === "geral-button") {
+            passwordType = "SG";
+        } else if (buttonId === "exame-button") {
+            passwordType = "SE";
+        }
 
-function generatePassword() {
-    const len = lenEl.value;
+        var password = generatePassword(passwordType);
+        generatedPasswords.push(password);
+        generatedPasswordInput.value = password;
 
-    let password = "";
+        passwordTypeCount[passwordType]++;
+        updateReport();
 
-    if (upperEl.checked) {
-        password += getUppercase();
+        var listItem = document.createElement("li");
+        listItem.textContent = password;
+        generatedPasswordsList.appendChild(listItem);
+
+        passwordScore.textContent = "Total de Senhas: " + generatedPasswords.length;
     }
-
-    if (lowerEl.checked) {
-        password += getLowercase();
-    }
-
-    if (numberEl.checked) {
-        password += getNumber();
-    }
-
-    if (symbolEl.checked) {
-        password += getSymbol();
-    }
-
-    for (let i = password.length; i < len; i++) {
-        const x = generateX();
-        password += x;
-    }
-
-    pwEl.innerText = password;
-}
-
-function generateX() {
-    const xs = [];
-    if (upperEl.checked) {
-        xs.push(getUppercase());
-    }
-
-    if (lowerEl.checked) {
-        xs.push(getLowercase());
-    }
-
-    if (numberEl.checked) {
-        xs.push(getNumber());
-    }
-
-    if (symbolEl.checked) {
-        xs.push(getSymbol());
-    }
-
-    if (xs.length === 0) return "";
-
-    return xs[Math.floor(Math.random() * xs.length)];
-}
-
-generateEl.addEventListener("click", generatePassword);
-
-copyEl.addEventListener("click", () => {
-    const textarea = document.createElement("textarea");
-    const password = pwEl.innerText;
-
-    if (!password) {
-        return;
-    }
-
-    textarea.value = password;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    textarea.remove();
-    alert("Password copied to clipboard");
 });
